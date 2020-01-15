@@ -1,20 +1,13 @@
 export type MIDIInputs = Array<WebMidi.MIDIInput>
 
-export async function getMidiInputs(navigator: Navigator): Promise<MIDIInputs> {
-    return navigator.requestMIDIAccess()
-        .then((midiAccess) => {
-            console.log("MIDI Ready!");
-            let inputs: Array<WebMidi.MIDIInput> = [];
-            for (let entry of midiAccess.inputs) {
-                console.log("MIDI input device: " + entry[1].id)
-                inputs.push(entry[1])
-
-            }
-            return inputs
-        })
-        .catch((error) => {
-            console.log("Error accessing MIDI devices: " + error);
-            return []
-        });
-
+export function getMidiInputs(access: WebMidi.MIDIAccess): MIDIInputs {
+    return [...access.inputs.values()]
 }
+
+export async function getMIDIAccess(navigator: Navigator): Promise<WebMidi.MIDIAccess> {
+    return navigator.requestMIDIAccess()
+}
+
+export function onStateChange(access: WebMidi.MIDIAccess, f: (newPort: WebMidi.MIDIConnectionEvent) => void): void {
+    access.onstatechange = f
+}   

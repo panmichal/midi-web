@@ -7,14 +7,22 @@ interface AppState {
     midiInputs: midiInfo.MIDIInputs
 }
 
+function removeMidiInput(input: WebMidi.MIDIPort, inputs: midiInfo.MIDIInputs): midiInfo.MIDIInputs {
+    return inputs.filter((i) => (i.id !== input.id))
+}
+
 export default function App() {
     const [midiInputs, setMidiInputs] = useState<midiInfo.MIDIInputs>([])
-
+    const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | null>(null)
     useEffect(() => {
-        midiInfo.getMidiInputs(window.navigator).then((inputs: midiInfo.MIDIInputs) => {
-            setMidiInputs(inputs)
+        midiInfo.getMIDIAccess(window.navigator).then((access) => {
+            setMidiAccess(access)
+            setMidiInputs(midiInfo.getMidiInputs(access))
+            midiInfo.onStateChange(access, (p) => {
+                setMidiInputs(midiInfo.getMidiInputs(access))
+            });
         })
-    });
+    }, []);
 
     return <Container maxWidth="md">
         <MidiInputs inputs={midiInputs}></MidiInputs>
