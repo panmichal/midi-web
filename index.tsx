@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Button from '@material-ui/core/Button';
-
+import App from './src/components/app'
 window.navigator.requestMIDIAccess()
     .then((midiAccess) => {
         console.log("MIDI Ready!");
@@ -38,11 +37,4 @@ function onMidiMessage(midiEvent: WebMidi.MIDIMessageEvent): void {
         }
     }
 }
-
-const App = () => (
-    <Button variant="contained" color="primary" >
-        Hello World
-</Button>
-);
-console.log(document);
 ReactDOM.render(<App />, document.getElementById("root"));
