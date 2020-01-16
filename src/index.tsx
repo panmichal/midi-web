@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './src/components/app'
+import App from '~/components/app'
 window.navigator.requestMIDIAccess()
     .then((midiAccess) => {
         console.log("MIDI Ready!");

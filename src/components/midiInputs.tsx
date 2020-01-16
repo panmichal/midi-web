@@ -7,7 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-import * as midiInfo from '../midiInfo'
+import * as midiInfo from '~/midi/midiInfo'
 
 const useStyles = makeStyles({
     table: {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container } from '@material-ui/core';
 import MidiInputs from './midiInputs'
-import * as midiInfo from '../midiInfo'
+import * as midiInfo from '~/midi/midiInfo'
 
 interface AppState {
     midiInputs: midiInfo.MIDIInputs
