@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { Container } from '@material-ui/core';
-import MidiInputs from './midiInputs'
+import AppContainer from '~/components/AppContainer';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import MidiInputs from './MidiInputs'
 import * as midiInfo from '~/midi/midiInfo'
-
-interface AppState {
-    midiInputs: midiInfo.MIDIInputs
-}
 
 function removeMidiInput(input: WebMidi.MIDIPort, inputs: midiInfo.MIDIInputs): midiInfo.MIDIInputs {
     return inputs.filter((i) => (i.id !== input.id))
 }
+
+const useStyles = makeStyles(theme => ({
+    table: {
+        minWidth: 400,
+        borderColor: theme.palette.common.white
+    },
+}));
 
 export default function App() {
     const [midiInputs, setMidiInputs] = useState<midiInfo.MIDIInputs>([])
@@ -24,7 +29,5 @@ export default function App() {
         })
     }, []);
 
-    return <Container maxWidth="md">
-        <MidiInputs inputs={midiInputs}></MidiInputs>
-    </Container>
+    return <AppContainer midiInputs={midiInputs} />
 }
