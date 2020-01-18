@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from '~/components/app'
+import App from '~components/App'
 window.navigator.requestMIDIAccess()
     .then((midiAccess) => {
         console.log("MIDI Ready!");
         for (let entry of midiAccess.inputs) {
             console.log("MIDI input device: " + entry[1].id)
-            // entry[1].onmidimessage = onMidiMessage;
+            entry[1].onmidimessage = onMidiMessage;
         }
     })
     .catch((error) => {
