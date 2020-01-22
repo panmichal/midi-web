@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "./node_modules/parcel-bundler/bin/cli.js src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/parcel-bundler/bin/cli.js build  src/index.html -d public"
   },

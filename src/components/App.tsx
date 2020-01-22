@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Container } from '@material-ui/core';
 import AppContainer from '~/components/AppContainer';
+import Header from '~/components/Header';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import MidiInputs from './MidiInputs'
 import * as midiInfo from '~/midi/midiInfo'
 
 function removeMidiInput(input: WebMidi.MIDIPort, inputs: midiInfo.MIDIInputs): midiInfo.MIDIInputs {
@@ -29,5 +28,5 @@ export default function App() {
         })
     }, []);
 
-    return <AppContainer midiInputs={midiInputs} />
+    return <div><Header /> <main><AppContainer midiInputs={midiInputs} /></main></div>
 }
