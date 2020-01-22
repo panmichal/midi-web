@@ -5,6 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import CheckIcon from '@material-ui/icons/Check';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as midiInfo from '~/midi/midiInfo'
 
@@ -51,7 +52,7 @@ export default function MidiInputs(props: MidiInputsProps) {
                         <StyledTableCell component="th" scope="row">
                             {row.name}
                         </StyledTableCell>
-                        <StyledTableCell>{row.state}</StyledTableCell>
+                        <StyledTableCell>{row.state === midiInfo.MIDIInputState.connected && "✔"} {row.state}</StyledTableCell>
                     </TableRow>
                 ))}
             </TableBody>

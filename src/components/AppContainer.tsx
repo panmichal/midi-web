@@ -2,6 +2,7 @@ import { Container } from '@material-ui/core';
 import React from 'react'
 import { MIDIInputs } from '~/midi/midiInfo';
 import MidiInputs from '~/components/MidiInputs'
+import MidiEvents from '~/components/MidiEvents'
 import Expansion from '~/components/Expansion'
 
 interface Props {
@@ -14,7 +15,7 @@ export default function AppContainer(props: Props) {
             <MidiInputs inputs={props.midiInputs}></MidiInputs>
         </Expansion>
         <Expansion summaryText="MIDI Events">
-            <MidiInputs inputs={props.midiInputs}></MidiInputs>
+            <MidiEvents initialEvents={[]}></MidiEvents>
         </Expansion>
     </Container>
 }

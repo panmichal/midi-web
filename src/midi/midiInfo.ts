@@ -1,5 +1,9 @@
 export type MIDIInputs = Array<WebMidi.MIDIInput>
 
+export enum MIDIInputState {
+    connected = "connected"
+}
+
 export function getMidiInputs(access: WebMidi.MIDIAccess): MIDIInputs {
     return [...access.inputs.values()]
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as midiInfo from '~/midi/midiInfo'
+import * as midiEvent from '~/midi/event'
 
 const useStyles = makeStyles(theme => ({
     table: {
@@ -30,13 +31,19 @@ const StyledTableCell = withStyles(theme => ({
 }))(TableCell);
 
 
+
 interface MidiInputsProps {
-    inputs: midiInfo.MIDIInputs
+    initialEvents: Array<midiEvent.MidiEvent>
 }
 
-export default function MidiInputs(props: MidiInputsProps) {
-    const classes = useStyles();
+const createRandomEvents: () => Array<midiEvent.MidiEvent> = () => {
+    return [midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent()];
+}
 
+const MidiEvents: React.FC<MidiInputsProps> = props => {
+    const classes = useStyles();
+    const [events, setEvents] = useState(createRandomEvents())
+    // setEvents(createRandomEvents());
     return <TableContainer>
         <Table className={classes.table} aria-label="MIDI input list">
             <TableHead>
@@ -46,12 +53,12 @@ export default function MidiInputs(props: MidiInputsProps) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {props.inputs.map(row => (
-                    <TableRow key={row.id}>
+                {events.map(row => (
+                    <TableRow key={row.command}>
                         <StyledTableCell component="th" scope="row">
-                            {row.name}
+                            {row.command}
                         </StyledTableCell>
-                        <StyledTableCell>{row.state}</StyledTableCell>
+                        <StyledTableCell>{row.channel}</StyledTableCell>
                     </TableRow>
                 ))}
             </TableBody>
@@ -59,3 +66,5 @@ export default function MidiInputs(props: MidiInputsProps) {
     </TableContainer>
 
 }
+
+export default MidiEvents;

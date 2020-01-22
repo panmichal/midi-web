@@ -1,17 +1,19 @@
-const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+export type NoteName = "C" | "C#" | "D" | "D#" | "E" | "F" | "F#" | "G" | "G#" | "A" | "A#" | "B";
 
-interface MidiEvent {
+export interface MidiEvent {
     command: number,
     channel: number
 }
 
-interface NoteOnEvent extends MidiEvent {
+export interface NoteOnEvent extends MidiEvent {
     note: number
+    noteName: NoteName
     velocity: number
 }
 
-interface NoteOffEvent extends MidiEvent {
+export interface NoteOffEvent extends MidiEvent {
     note: number
+    noteName: NoteName
     velocity: number
 }
 
@@ -20,6 +22,7 @@ export function createEvent(): MidiEvent {
         command: 1,
         channel: 2,
         note: 2,
+        noteName: "F#",
         velocity: 5
     }
 }
