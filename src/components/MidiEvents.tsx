@@ -45,7 +45,7 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
     useEffect(() => {
         props.midiInputs.forEach((input) => {
             input.onmidimessage = (e) => {
-                const newEvent = midiEvent.createFromRawData(e);
+                const newEvent = midiEvent.createFromRawData(e, input);
                 if (newEvent !== null) {
                     setEvents(currentEvents => {
                         const sliceIndex = currentEvents.length - 10 >= 0 ? currentEvents.length - 10 : 0;
@@ -59,18 +59,21 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
     const emptyRow: (key: number) => JSX.Element = (key) => {
         return <TableRow key={key}>
             <StyledTableCell component="th" scope="row">
-                EMPTY
             </StyledTableCell>
-            <StyledTableCell>EMPTY</StyledTableCell>
+            <StyledTableCell></StyledTableCell>
+            <StyledTableCell></StyledTableCell>
+            <StyledTableCell></StyledTableCell>
         </TableRow>
     }
 
     return <TableContainer>
-        <Table className={classes.table} aria-label="MIDI input list">
+        <Table className={classes.table} size="small" aria-label="MIDI input list">
             <TableHead>
                 <TableRow>
-                    <StyledTableCell>Name</StyledTableCell>
-                    <StyledTableCell>State</StyledTableCell>
+                    <StyledTableCell>Type</StyledTableCell>
+                    <StyledTableCell>Values</StyledTableCell>
+                    <StyledTableCell>Input</StyledTableCell>
+                    <StyledTableCell>Timestamp</StyledTableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -83,6 +86,8 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
                                 {events[index].command}
                             </StyledTableCell>
                             <StyledTableCell>{events[index].channel}</StyledTableCell>
+                            <StyledTableCell>{events[index].input.name}</StyledTableCell>
+                            <StyledTableCell>{events[index].timestamp}</StyledTableCell>
                         </TableRow>
                     }
                 })}

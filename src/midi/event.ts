@@ -1,14 +1,17 @@
-
+import { } from '~/midi/midiInfo';
 
 // export type NoteName = "C" | "C#" | "D" | "D#" | "E" | "F" | "F#" | "G" | "G#" | "A" | "A#" | "B";
 
 export type NoteName = "C" | "C#" | "D" | "D#" | "E" | "F" | "F#" | "G" | "G#" | "A" | "A#" | "B"
 export interface MidiEvent {
-    command: number,
+    command: number
     channel: number
+    input: WebMidi.MIDIInput
+    timestamp: DOMHighResTimeStamp
 }
 
 export interface NoteOnEvent extends MidiEvent {
+    type: "noteon"
     note: number
     noteName: NoteName
     velocity: number
@@ -16,11 +19,17 @@ export interface NoteOnEvent extends MidiEvent {
 }
 
 export interface NoteOffEvent extends MidiEvent {
+    type: "noteoff"
     note: number
     noteName: NoteName
     velocity: number
     octave: number
 }
+
+export interface OtherEvent extends MidiEvent {
+    type: "other"
+}
+
 
 export function createEvent(): MidiEvent {
     return <NoteOnEvent>{
@@ -31,6 +40,30 @@ export function createEvent(): MidiEvent {
         velocity: 5
     }
 }
+type NoteOnData = Omit<NoteOnEvent, 'type'>;
+type NoteOffData = Omit<NoteOffEvent, 'type'>;
+type OtherData = MidiEvent;
+
+const noteOnEvent: (data: NoteOnData) => NoteOnEvent = data => {
+    return {
+        ...data,
+        type: "noteon"
+    }
+}
+const noteOffEvent: (data: NoteOffData) => NoteOffEvent = data => {
+    return {
+        ...data,
+        type: "noteoff"
+    }
+}
+const otherEvent: (data: OtherData) => OtherEvent = data => {
+    return {
+        ...data,
+        type: "other"
+    }
+}
+
+export type Event = NoteOnEvent | NoteOffEvent | OtherEvent
 
 function getNoteName(noteValue: number): NoteName {
     switch (noteValue % 12) {
@@ -63,7 +96,7 @@ function getNoteName(noteValue: number): NoteName {
     }
 }
 
-export function createFromRawData(event: WebMidi.MIDIMessageEvent): MidiEvent | null {
+export function createFromRawData(event: WebMidi.MIDIMessageEvent, input: WebMidi.MIDIInput): MidiEvent | null {
     const data: Uint8Array = event.data;
     if (data.length === 3) {
         // status is the first byte.
@@ -72,35 +105,35 @@ export function createFromRawData(event: WebMidi.MIDIMessageEvent): MidiEvent | 
         const command = status >>> 4;
         // channel 0-15 is the lower four bits.
         const channel = status & 0xF;
-        console.log(`$Command: ${command.toString(16)}, Channel: ${channel.toString(16)}`);
+        console.log(`$Command: ${command.toString(16)}, Channel: ${channel.toString(16)} `);
+        console.log(event.timeStamp)
+        const baseProperties = {
+            input,
+            command,
+            channel,
+            timestamp: event.timeStamp
+        }
 
         switch (command) {
             case 0x9:
-                return <NoteOnEvent>{
-                    command,
-                    channel,
+                return noteOnEvent({
+                    ...baseProperties,
                     velocity: data[2],
                     note: data[1],
                     noteName: getNoteName(data[1]),
                     octave: data[1] / 12
-
-                }
+                });
 
             case 0x8:
-                return <NoteOffEvent>{
-                    command,
-                    channel,
+                return noteOffEvent({
+                    ...baseProperties,
                     velocity: data[2],
                     note: data[1],
                     noteName: getNoteName(data[1]),
                     octave: data[1] / 12
-
-                }
+                });
             default:
-                return <MidiEvent>{
-                    command,
-                    channel
-                }
+                return otherEvent(baseProperties)
 
         }
         // just look at note on and note off messages.
