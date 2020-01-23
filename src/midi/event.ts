@@ -96,6 +96,8 @@ function getNoteName(noteValue: number): NoteName {
     }
 }
 
+const navigationStartTimestamp = window.performance.timing.navigationStart
+
 export function createFromRawData(event: WebMidi.MIDIMessageEvent, input: WebMidi.MIDIInput): MidiEvent | null {
     const data: Uint8Array = event.data;
     if (data.length === 3) {
@@ -105,13 +107,11 @@ export function createFromRawData(event: WebMidi.MIDIMessageEvent, input: WebMid
         const command = status >>> 4;
         // channel 0-15 is the lower four bits.
         const channel = status & 0xF;
-        console.log(`$Command: ${command.toString(16)}, Channel: ${channel.toString(16)} `);
-        console.log(event.timeStamp)
         const baseProperties = {
             input,
             command,
             channel,
-            timestamp: event.timeStamp
+            timestamp: navigationStartTimestamp + event.timeStamp
         }
 
         switch (command) {

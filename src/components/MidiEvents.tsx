@@ -87,7 +87,7 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
                             </StyledTableCell>
                             <StyledTableCell>{events[index].channel}</StyledTableCell>
                             <StyledTableCell>{events[index].input.name}</StyledTableCell>
-                            <StyledTableCell>{events[index].timestamp}</StyledTableCell>
+                            <StyledTableCell>{new Date(events[index].timestamp).toUTCString()}</StyledTableCell>
                         </TableRow>
                     }
                 })}
