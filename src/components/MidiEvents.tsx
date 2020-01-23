@@ -39,6 +39,18 @@ interface MidiInputsProps {
     midiInputs: midiInfo.MIDIInputs
 }
 
+function assertNever(event: never): never {
+    throw new Error("Unexpected event: " + event);
+}
+const getEventValue: (event: midiEvent.Event) => string = (event) => {
+    switch (event.type) {
+        case "noteon": return event.noteName + event.octave;
+        case "noteoff": return event.noteName + event.octave;
+        case "other": return "-";
+        default: assertNever(event);
+    }
+};
+
 const MidiEvents: React.FC<MidiInputsProps> = props => {
     const classes = useStyles();
     const [events, setEvents] = useState(props.initialEvents)
@@ -83,9 +95,9 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
                     } else {
                         return <TableRow key={index}>
                             <StyledTableCell component="th" scope="row">
-                                {events[index].command}
+                                {events[index].type}
                             </StyledTableCell>
-                            <StyledTableCell>{events[index].channel}</StyledTableCell>
+                            <StyledTableCell>{getEventValue(events[index])}</StyledTableCell>
                             <StyledTableCell>{events[index].input.name}</StyledTableCell>
                             <StyledTableCell>{new Date(events[index].timestamp).toUTCString()}</StyledTableCell>
                         </TableRow>

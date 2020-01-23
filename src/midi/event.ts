@@ -7,7 +7,8 @@ export interface MidiEvent {
     command: number
     channel: number
     input: WebMidi.MIDIInput
-    timestamp: DOMHighResTimeStamp
+    timestamp: DOMHighResTimeStamp,
+    type: string
 }
 
 export interface NoteOnEvent extends MidiEvent {
@@ -121,7 +122,7 @@ export function createFromRawData(event: WebMidi.MIDIMessageEvent, input: WebMid
                     velocity: data[2],
                     note: data[1],
                     noteName: getNoteName(data[1]),
-                    octave: data[1] / 12
+                    octave: Math.trunc(data[1] / 12)
                 });
 
             case 0x8:
@@ -130,7 +131,7 @@ export function createFromRawData(event: WebMidi.MIDIMessageEvent, input: WebMid
                     velocity: data[2],
                     note: data[1],
                     noteName: getNoteName(data[1]),
-                    octave: data[1] / 12
+                    octave: Math.trunc(data[1] / 12)
                 });
             default:
                 return otherEvent(baseProperties)
