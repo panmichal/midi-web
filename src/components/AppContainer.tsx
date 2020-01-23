@@ -15,7 +15,7 @@ export default function AppContainer(props: Props) {
             <MidiInputs inputs={props.midiInputs}></MidiInputs>
         </Expansion>
         <Expansion summaryText="MIDI Events">
-            <MidiEvents initialEvents={[]}></MidiEvents>
+            <MidiEvents initialEvents={[]} midiInputs={props.midiInputs}></MidiEvents>
         </Expansion>
     </Container>
 }

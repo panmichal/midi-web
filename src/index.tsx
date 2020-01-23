@@ -6,7 +6,7 @@ window.navigator.requestMIDIAccess()
         console.log("MIDI Ready!");
         for (let entry of midiAccess.inputs) {
             console.log("MIDI input device: " + entry[1].id)
-            entry[1].onmidimessage = onMidiMessage;
+            // entry[1].onmidimessage = onMidiMessage;
         }
     })
     .catch((error) => {

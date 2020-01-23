@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as midiInfo from '~/midi/midiInfo'
 import * as midiEvent from '~/midi/event'
+
+const NUM_OF_EVENTS = 10;
 
 const useStyles = makeStyles(theme => ({
     table: {
@@ -34,16 +36,35 @@ const StyledTableCell = withStyles(theme => ({
 
 interface MidiInputsProps {
     initialEvents: Array<midiEvent.MidiEvent>
-}
-
-const createRandomEvents: () => Array<midiEvent.MidiEvent> = () => {
-    return [midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent(), midiEvent.createEvent()];
+    midiInputs: midiInfo.MIDIInputs
 }
 
 const MidiEvents: React.FC<MidiInputsProps> = props => {
     const classes = useStyles();
-    const [events, setEvents] = useState(createRandomEvents())
-    // setEvents(createRandomEvents());
+    const [events, setEvents] = useState(props.initialEvents)
+    useEffect(() => {
+        props.midiInputs.forEach((input) => {
+            input.onmidimessage = (e) => {
+                const newEvent = midiEvent.createFromRawData(e);
+                if (newEvent !== null) {
+                    setEvents(currentEvents => {
+                        const sliceIndex = currentEvents.length - 10 >= 0 ? currentEvents.length - 10 : 0;
+                        return [...currentEvents.slice(sliceIndex), newEvent]
+                    })
+                }
+            }
+        });
+    })
+
+    const emptyRow: (key: number) => JSX.Element = (key) => {
+        return <TableRow key={key}>
+            <StyledTableCell component="th" scope="row">
+                EMPTY
+            </StyledTableCell>
+            <StyledTableCell>EMPTY</StyledTableCell>
+        </TableRow>
+    }
+
     return <TableContainer>
         <Table className={classes.table} aria-label="MIDI input list">
             <TableHead>
@@ -53,14 +74,18 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {events.map(row => (
-                    <TableRow key={row.command}>
-                        <StyledTableCell component="th" scope="row">
-                            {row.command}
-                        </StyledTableCell>
-                        <StyledTableCell>{row.channel}</StyledTableCell>
-                    </TableRow>
-                ))}
+                {[...Array(NUM_OF_EVENTS)].map((row: number, index: number) => {
+                    if (events.length - 1 < index) {
+                        return emptyRow(index);
+                    } else {
+                        return <TableRow key={index}>
+                            <StyledTableCell component="th" scope="row">
+                                {events[index].command}
+                            </StyledTableCell>
+                            <StyledTableCell>{events[index].channel}</StyledTableCell>
+                        </TableRow>
+                    }
+                })}
             </TableBody>
         </Table>
     </TableContainer>
