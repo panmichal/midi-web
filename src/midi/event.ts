@@ -7,8 +7,7 @@ export interface MidiEvent {
     command: number
     channel: number
     input: WebMidi.MIDIInput
-    timestamp: DOMHighResTimeStamp,
-    type: string
+    timestamp: DOMHighResTimeStamp
 }
 
 export interface NoteOnEvent extends MidiEvent {
@@ -43,7 +42,7 @@ export function createEvent(): MidiEvent {
 }
 type NoteOnData = Omit<NoteOnEvent, 'type'>;
 type NoteOffData = Omit<NoteOffEvent, 'type'>;
-type OtherData = MidiEvent;
+type OtherData = Omit<OtherEvent, 'type'>;
 
 const noteOnEvent: (data: NoteOnData) => NoteOnEvent = data => {
     return {
@@ -64,7 +63,7 @@ const otherEvent: (data: OtherData) => OtherEvent = data => {
     }
 }
 
-export type Event = NoteOnEvent | NoteOffEvent | OtherEvent
+export type SupportedEvent = NoteOnEvent | NoteOffEvent | OtherEvent
 
 function getNoteName(noteValue: number): NoteName {
     switch (noteValue % 12) {
@@ -99,7 +98,7 @@ function getNoteName(noteValue: number): NoteName {
 
 const navigationStartTimestamp = window.performance.timing.navigationStart
 
-export function createFromRawData(event: WebMidi.MIDIMessageEvent, input: WebMidi.MIDIInput): MidiEvent | null {
+export function createFromRawData(event: WebMidi.MIDIMessageEvent, input: WebMidi.MIDIInput): SupportedEvent | null {
     const data: Uint8Array = event.data;
     if (data.length === 3) {
         // status is the first byte.

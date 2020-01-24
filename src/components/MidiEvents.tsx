@@ -9,7 +9,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as midiInfo from '~/midi/midiInfo'
 import * as midiEvent from '~/midi/event'
 
-const NUM_OF_EVENTS = 10;
+const NUM_OF_EVENTS = 15;
 
 const useStyles = makeStyles(theme => ({
     table: {
@@ -35,19 +35,19 @@ const StyledTableCell = withStyles(theme => ({
 
 
 interface MidiInputsProps {
-    initialEvents: Array<midiEvent.MidiEvent>
+    initialEvents: Array<midiEvent.SupportedEvent>
     midiInputs: midiInfo.MIDIInputs
 }
 
 function assertNever(event: never): never {
     throw new Error("Unexpected event: " + event);
 }
-const getEventValue: (event: midiEvent.Event) => string = (event) => {
+const getEventValue: (event: midiEvent.SupportedEvent) => string = (event) => {
     switch (event.type) {
         case "noteon": return event.noteName + event.octave;
         case "noteoff": return event.noteName + event.octave;
         case "other": return "-";
-        default: assertNever(event);
+        default: return assertNever(event);
     }
 };
 
