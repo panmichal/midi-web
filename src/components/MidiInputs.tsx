@@ -12,8 +12,6 @@ import * as midiInfo from '~/midi/midiInfo'
 const useStyles = makeStyles(theme => ({
     table: {
         minWidth: 400,
-        borderLeft: '1px solid',
-        borderRight: '1px solid',
         borderColor: theme.palette.common.black
     },
 }));
@@ -24,9 +22,7 @@ const StyledTableCell = withStyles(theme => ({
         color: theme.palette.common.white
     },
     body: {
-        fontSize: 14,
-        borderBottom: '1px solid',
-        borderLeft: '1px solid'
+        fontSize: 14
     },
 }))(TableCell);
 
@@ -39,7 +35,7 @@ export default function MidiInputs(props: MidiInputsProps) {
     const classes = useStyles();
 
     return <TableContainer>
-        <Table className={classes.table} aria-label="MIDI input list">
+        <Table className={classes.table} size="small" aria-label="MIDI input list">
             <TableHead>
                 <TableRow>
                     <StyledTableCell>Name</StyledTableCell>

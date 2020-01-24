@@ -13,10 +13,7 @@ const NUM_OF_EVENTS = 15;
 
 const useStyles = makeStyles(theme => ({
     table: {
-        minWidth: 400,
-        borderLeft: '1px solid',
-        borderRight: '1px solid',
-        borderColor: theme.palette.common.black
+        minWidth: 400
     },
 }));
 
@@ -26,9 +23,8 @@ const StyledTableCell = withStyles(theme => ({
         color: theme.palette.common.white
     },
     body: {
-        fontSize: 14,
-        borderBottom: '1px solid',
-        borderLeft: '1px solid'
+        height: 33,
+        fontSize: 14
     },
 }))(TableCell);
 
@@ -36,6 +32,7 @@ const StyledTableCell = withStyles(theme => ({
 
 interface MidiInputsProps {
     initialEvents: Array<midiEvent.SupportedEvent>
+    onIncomingEvent: (e: midiEvent.SupportedEvent) => void,
     midiInputs: midiInfo.MIDIInputs
 }
 
@@ -59,8 +56,9 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
             input.onmidimessage = (e) => {
                 const newEvent = midiEvent.createFromRawData(e, input);
                 if (newEvent !== null) {
+                    props.onIncomingEvent(newEvent)
                     setEvents(currentEvents => {
-                        const sliceIndex = currentEvents.length - 10 >= 0 ? currentEvents.length - 10 : 0;
+                        const sliceIndex = currentEvents.length - NUM_OF_EVENTS >= 0 ? currentEvents.length - NUM_OF_EVENTS : 0;
                         return [...currentEvents.slice(sliceIndex), newEvent]
                     })
                 }
@@ -72,9 +70,9 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
         return <TableRow key={key}>
             <StyledTableCell component="th" scope="row">
             </StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
+            <StyledTableCell> </StyledTableCell>
+            <StyledTableCell> </StyledTableCell>
+            <StyledTableCell> </StyledTableCell>
         </TableRow>
     }
 
