@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,6 +8,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as midiInfo from '~/midi/midiInfo'
 import * as midiEvent from '~/midi/event'
+import throttle from '~/utility/throttle'
 
 const NUM_OF_EVENTS = 15;
 
@@ -50,13 +51,17 @@ const getEventValue: (event: midiEvent.SupportedEvent) => string = (event) => {
 
 const MidiEvents: React.FC<MidiInputsProps> = props => {
     const classes = useStyles();
-    const [events, setEvents] = useState(props.initialEvents)
+    const [events, setEvents] = useState(props.initialEvents);
+    const [hasNewEvent, setHasNewEvent] = useState(false);
+
+    const throttledOnIncomingEvent = useCallback(throttle(props.onIncomingEvent), []);
+
     useEffect(() => {
         props.midiInputs.forEach((input) => {
             input.onmidimessage = (e) => {
                 const newEvent = midiEvent.createFromRawData(e, input);
                 if (newEvent !== null) {
-                    props.onIncomingEvent(newEvent)
+                    throttledOnIncomingEvent(newEvent)
                     setEvents(currentEvents => {
                         const sliceIndex = currentEvents.length - NUM_OF_EVENTS >= 0 ? currentEvents.length - NUM_OF_EVENTS : 0;
                         return [...currentEvents.slice(sliceIndex), newEvent]

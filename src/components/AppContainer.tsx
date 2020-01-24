@@ -15,10 +15,10 @@ interface Props {
 
 const useStyles = makeStyles(theme => ({
     eventListNewEvent: {
-        backgroundColor: "red"
+        backgroundColor: "#e6f9ff"
     },
     eventList: {
-        transition: "background-color 0.2s"
+        transition: "background-color 0.1s"
     }
 }));
 
@@ -27,8 +27,13 @@ export default function AppContainer(props: Props) {
     const classes = useStyles();
     const [hasNewEvent, setHasNewEvent] = useState(false)
     const onIncomingEvent: (event: SupportedEvent) => void = event => {
-        console.log("nowy")
-        !hasNewEvent && setHasNewEvent(true)
+        if (!hasNewEvent) {
+            setHasNewEvent(true)
+        }
+    }
+
+    const onTransitionEnd = () => {
+        setHasNewEvent(false)
     }
 
     return <Container maxWidth="md">
@@ -36,7 +41,7 @@ export default function AppContainer(props: Props) {
             <MidiInputs inputs={props.midiInputs}></MidiInputs>
         </Expansion>
         <ExpansionPanel>
-            <div className={`${classes.eventList} ${hasNewEvent ? classes.eventListNewEvent : ""}`}>
+            <div className={`${classes.eventList} ${hasNewEvent ? classes.eventListNewEvent : ""}`} onTransitionEnd={onTransitionEnd}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>Incoming MIDI events</ExpansionPanelSummary>
             </div>
             <ExpansionPanelDetails><MidiEvents initialEvents={[]} midiInputs={props.midiInputs} onIncomingEvent={onIncomingEvent}></MidiEvents></ExpansionPanelDetails>
