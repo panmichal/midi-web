@@ -44,7 +44,7 @@ function assertNever(event: never): never {
 const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
   switch (event.type) {
     case "noteon":
-      return event.noteName + event.octave;
+      return `${event.noteName + event.octave} ${event.velocity}`;
     case "noteoff":
       return event.noteName + event.octave;
     case "other":
