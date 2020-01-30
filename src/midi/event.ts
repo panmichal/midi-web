@@ -50,39 +50,6 @@ export interface OtherEvent extends MidiEvent {
 
 type EventRequiredData<T extends SupportedEvent> = Omit<T, "type">;
 
-const noteOnEvent: (
-  data: EventRequiredData<NoteOnEvent>
-) => NoteOnEvent = data => {
-  return {
-    ...data,
-    type: "noteon"
-  };
-};
-const noteOffEvent: (
-  data: EventRequiredData<NoteOffEvent>
-) => NoteOffEvent = data => {
-  return {
-    ...data,
-    type: "noteoff"
-  };
-};
-const controlChangeEvent: (
-  data: EventRequiredData<ControlChangeEvent>
-) => ControlChangeEvent = data => {
-  return {
-    ...data,
-    type: "control change"
-  };
-};
-const otherEvent: (
-  data: EventRequiredData<OtherEvent>
-) => OtherEvent = data => {
-  return {
-    ...data,
-    type: "other"
-  };
-};
-
 export type SupportedEvent =
   | NoteOnEvent
   | NoteOffEvent
