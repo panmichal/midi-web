@@ -1,4 +1,4 @@
-function throttle<T extends Function>(
+function throttle<T extends (...args: any[]) => any>(
   cb: T,
   interval = 200
 ): (...args: Parameters<T>) => void {
