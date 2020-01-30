@@ -47,6 +47,8 @@ const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
       return `${event.noteName + event.octave} ${event.velocity}`;
     case "noteoff":
       return event.noteName + event.octave;
+    case "control change":
+      return `CC${event.controllerNumber} ${event.controllerValue}`;
     case "other":
       return "-";
     default:
