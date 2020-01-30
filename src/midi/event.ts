@@ -57,32 +57,36 @@ export function createEvent(): MidiEvent {
     velocity: 5
   };
 }
-type NoteOnData = Omit<NoteOnEvent, "type">;
-type NoteOffData = Omit<NoteOffEvent, "type">;
-type OtherData = Omit<OtherEvent, "type">;
-type ControlChangeData = Omit<ControlChangeEvent, "type">;
 
-const noteOnEvent: (data: NoteOnData) => NoteOnEvent = data => {
+type EventRequiredData<T extends MidiEvent> = Omit<T, "type">;
+
+const noteOnEvent: (
+  data: EventRequiredData<NoteOnEvent>
+) => NoteOnEvent = data => {
   return {
     ...data,
     type: "noteon"
   };
 };
-const noteOffEvent: (data: NoteOffData) => NoteOffEvent = data => {
+const noteOffEvent: (
+  data: EventRequiredData<NoteOffEvent>
+) => NoteOffEvent = data => {
   return {
     ...data,
     type: "noteoff"
   };
 };
 const controlChangeEvent: (
-  data: ControlChangeData
+  data: EventRequiredData<ControlChangeEvent>
 ) => ControlChangeEvent = data => {
   return {
     ...data,
     type: "control change"
   };
 };
-const otherEvent: (data: OtherData) => OtherEvent = data => {
+const otherEvent: (
+  data: EventRequiredData<OtherEvent>
+) => OtherEvent = data => {
   return {
     ...data,
     type: "other"
