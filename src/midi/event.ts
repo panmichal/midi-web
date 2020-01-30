@@ -48,17 +48,7 @@ export interface OtherEvent extends MidiEvent {
   type: "other";
 }
 
-export function createEvent(): MidiEvent {
-  return <NoteOnEvent>{
-    command: 1,
-    channel: 2,
-    note: 2,
-    noteName: "D",
-    velocity: 5
-  };
-}
-
-type EventRequiredData<T extends MidiEvent> = Omit<T, "type">;
+type EventRequiredData<T extends SupportedEvent> = Omit<T, "type">;
 
 const noteOnEvent: (
   data: EventRequiredData<NoteOnEvent>
@@ -96,8 +86,24 @@ const otherEvent: (
 export type SupportedEvent =
   | NoteOnEvent
   | NoteOffEvent
-  | OtherEvent
-  | ControlChangeEvent;
+  | ControlChangeEvent
+  | OtherEvent;
+
+function getEventType<T extends SupportedEvent, E extends EventRequiredData<T>>(
+  e: E
+): T["type"] {
+  return "other";
+}
+
+function createEvent<T extends SupportedEvent>(
+  data: EventRequiredData<T>,
+  type: T["type"]
+): T {
+  return {
+    ...data,
+    type
+  } as T;
+}
 
 function getNoteName(noteValue: number): NoteName {
   switch (noteValue % 12) {
@@ -153,30 +159,39 @@ export function createFromRawData(
 
     switch (command) {
       case 0x9:
-        return noteOnEvent({
-          ...baseProperties,
-          velocity: data[2],
-          note: data[1],
-          noteName: getNoteName(data[1]),
-          octave: Math.trunc(data[1] / 12)
-        });
+        return createEvent<NoteOnEvent>(
+          {
+            ...baseProperties,
+            velocity: data[2],
+            note: data[1],
+            noteName: getNoteName(data[1]),
+            octave: Math.trunc(data[1] / 12)
+          },
+          "noteon"
+        );
 
       case 0x8:
-        return noteOffEvent({
-          ...baseProperties,
-          velocity: data[2],
-          note: data[1],
-          noteName: getNoteName(data[1]),
-          octave: Math.trunc(data[1] / 12)
-        });
+        return createEvent<NoteOffEvent>(
+          {
+            ...baseProperties,
+            velocity: data[2],
+            note: data[1],
+            noteName: getNoteName(data[1]),
+            octave: Math.trunc(data[1] / 12)
+          },
+          "noteoff"
+        );
       case 0xb:
-        return controlChangeEvent({
-          ...baseProperties,
-          controllerNumber: data[1],
-          controllerValue: data[2]
-        });
+        return createEvent<ControlChangeEvent>(
+          {
+            ...baseProperties,
+            controllerNumber: data[1],
+            controllerValue: data[2]
+          },
+          "control change"
+        );
       default:
-        return otherEvent(baseProperties);
+        return createEvent<OtherEvent>(baseProperties, "other");
     }
   }
 

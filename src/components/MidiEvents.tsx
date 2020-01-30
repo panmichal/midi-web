@@ -39,7 +39,7 @@ interface MidiInputsProps {
 }
 
 function assertNever(event: never): never {
-  throw new Error("Unexpected event: " + event);
+  throw new Error("Unexpected event");
 }
 const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
   switch (event.type) {
