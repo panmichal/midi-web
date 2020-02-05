@@ -9,6 +9,7 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import * as midiInfo from "~/midi/midiInfo";
 import * as midiEvent from "~/midi/event";
 import throttle from "~/utility/throttle";
+import DatatableToolbar from "~/components/DatatableToolbar";
 
 const NUM_OF_EVENTS = 50;
 
@@ -23,8 +24,9 @@ const useStyles = makeStyles(theme => ({
 
 const StyledTableCell = withStyles(theme => ({
   head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    borderBottom: "2px solid",
+    marginBottom: "5px",
+    fontFamily: "'Playfair Display', serif"
   },
   body: {
     height: 33,
@@ -97,6 +99,7 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
 
   return (
     <TableContainer className={classes.container}>
+      <DatatableToolbar />
       <Table
         className={classes.table}
         size="small"
