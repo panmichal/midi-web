@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
+import React, { ChangeEvent } from "react";
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -32,14 +32,23 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function DatatableToolbar(props: object) {
+interface IProps {
+  groupEvents: boolean;
+  onGroupEeventsChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default function DatatableToolbar(props: IProps) {
   const classes = useStyles();
   return (
     <div className={classes.toolbar}>
       <div className={classes.groupCheckbox}>
         <label>
           Group events
-          <input type="checkbox" className={classes.inputCheckbox} />
+          <input
+            type="checkbox"
+            className={classes.inputCheckbox}
+            onChange={props.onGroupEeventsChange}
+          />
         </label>
       </div>
     </div>

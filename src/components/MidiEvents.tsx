@@ -61,12 +61,18 @@ const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
 const MidiEvents: React.FC<MidiInputsProps> = props => {
   const classes = useStyles();
   const [events, setEvents] = useState(props.initialEvents);
-  const [hasNewEvent, setHasNewEvent] = useState(false);
+  const [groupEvents, setGroupEvents] = useState(false);
 
   const throttledOnIncomingEvent = useCallback(
     throttle(props.onIncomingEvent),
     []
   );
+
+  const handleGroupEventsChange: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void = event => {
+    setGroupEvents(event.currentTarget.checked);
+  };
 
   useEffect(() => {
     props.midiInputs.forEach(input => {
@@ -99,7 +105,10 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
 
   return (
     <TableContainer className={classes.container}>
-      <DatatableToolbar />
+      <DatatableToolbar
+        groupEvents={groupEvents}
+        onGroupEeventsChange={handleGroupEventsChange}
+      />
       <Table
         className={classes.table}
         size="small"
