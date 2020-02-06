@@ -10,6 +10,7 @@ import * as midiInfo from "~/midi/midiInfo";
 import * as midiEvent from "~/midi/event";
 import throttle from "~/utility/throttle";
 import DatatableToolbar from "~/components/DatatableToolbar";
+import groupConsecutive from "~/utility/groupConsecutive";
 
 const NUM_OF_EVENTS = 50;
 
@@ -34,10 +35,16 @@ const StyledTableCell = withStyles(theme => ({
   }
 }))(TableCell);
 
-interface MidiInputsProps {
+interface IProps {
   initialEvents: Array<midiEvent.SupportedEvent>;
   onIncomingEvent: (e: midiEvent.SupportedEvent) => void;
   midiInputs: midiInfo.MIDIInputs;
+}
+
+type EventList = midiEvent.SupportedEvent[];
+
+function filterOutNonGroupableEvents(events: EventList): EventList {
+  return events.filter(event => event.type !== "noteoff");
 }
 
 function assertNever(event: never): never {
@@ -58,7 +65,11 @@ const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
   }
 };
 
-const MidiEvents: React.FC<MidiInputsProps> = props => {
+function getEventsToShow(events: EventList, grouped: boolean): EventList {
+  return grouped ? filterOutNonGroupableEvents(events) : events;
+}
+
+const MidiEvents: React.FC<IProps> = props => {
   const classes = useStyles();
   const [events, setEvents] = useState(props.initialEvents);
   const [groupEvents, setGroupEvents] = useState(false);
@@ -92,16 +103,9 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
     });
   });
 
-  const emptyRow: (key: number) => JSX.Element = key => {
-    return (
-      <TableRow key={key}>
-        <StyledTableCell component="th" scope="row"></StyledTableCell>
-        <StyledTableCell> </StyledTableCell>
-        <StyledTableCell> </StyledTableCell>
-        <StyledTableCell> </StyledTableCell>
-      </TableRow>
-    );
-  };
+  useEffect(() => {
+    // setEvents(filterOutNonGroupableEvents(events));
+  }, [groupEvents]);
 
   return (
     <TableContainer className={classes.container}>
@@ -124,20 +128,22 @@ const MidiEvents: React.FC<MidiInputsProps> = props => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {events.map((event: midiEvent.SupportedEvent, rowNumber: number) => {
-            return (
-              <TableRow key={rowNumber}>
-                <StyledTableCell component="th" scope="row">
-                  {event.type}
-                </StyledTableCell>
-                <StyledTableCell>{getEventValue(event)}</StyledTableCell>
-                <StyledTableCell>{event.input.name}</StyledTableCell>
-                <StyledTableCell>
-                  {new Date(event.timestamp).toUTCString()}
-                </StyledTableCell>
-              </TableRow>
-            );
-          })}
+          {getEventsToShow(events, groupEvents).map(
+            (event: midiEvent.SupportedEvent, rowNumber: number) => {
+              return (
+                <TableRow key={rowNumber}>
+                  <StyledTableCell component="th" scope="row">
+                    {event.type}
+                  </StyledTableCell>
+                  <StyledTableCell>{getEventValue(event)}</StyledTableCell>
+                  <StyledTableCell>{event.input.name}</StyledTableCell>
+                  <StyledTableCell>
+                    {new Date(event.timestamp).toUTCString()}
+                  </StyledTableCell>
+                </TableRow>
+              );
+            }
+          )}
         </TableBody>
       </Table>
     </TableContainer>
