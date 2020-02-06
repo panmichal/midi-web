@@ -86,7 +86,7 @@ function getEventsToShow(
         presentation.push({
           type: eventOrContainer.type,
           timestamp: "",
-          value: "xaaff",
+          value: `(${eventOrContainer.children.length})`,
           input: "afaf"
         } as IEventPresentation);
       } else {
