@@ -10,7 +10,7 @@ import * as midiInfo from "~/midi/midiInfo";
 import * as midiEvent from "~/midi/event";
 import throttle from "~/utility/throttle";
 import DatatableToolbar from "~/components/DatatableToolbar";
-import groupConsecutive from "~/utility/groupConsecutive";
+import { groupConsecutiveEvents } from "~/utility/groupConsecutive";
 
 const NUM_OF_EVENTS = 50;
 
@@ -65,8 +65,63 @@ const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
   }
 };
 
-function getEventsToShow(events: EventList, grouped: boolean): EventList {
-  return grouped ? filterOutNonGroupableEvents(events) : events;
+function isEventContainer(
+  e: midiEvent.SupportedEvent | midiEvent.EventContainer
+): e is midiEvent.EventContainer {
+  return (e as midiEvent.EventContainer).children != undefined;
+}
+
+function getEventsToShow(
+  events: EventList,
+  grouped: boolean
+): IEventPresentation[] {
+  const maybeGrouped = grouped
+    ? maybeGroupEvents(filterOutNonGroupableEvents(events), true)
+    : events;
+
+  let presentation: IEventPresentation[] = [];
+  maybeGrouped.forEach(
+    (eventOrContainer: midiEvent.SupportedEvent | midiEvent.EventContainer) => {
+      if (isEventContainer(eventOrContainer)) {
+        presentation.push({
+          type: eventOrContainer.type,
+          timestamp: "",
+          value: "xaaff",
+          input: "afaf"
+        } as IEventPresentation);
+      } else {
+        presentation.push({
+          type: eventOrContainer.type,
+          timestamp: new Date(eventOrContainer.timestamp).toUTCString(),
+          value: getEventValue(eventOrContainer),
+          input: eventOrContainer.input.name
+        } as IEventPresentation);
+      }
+    }
+  );
+  return presentation;
+}
+
+interface IEventPresentation {
+  type: "noteon" | "noteoff" | "control change" | "other";
+  timestamp: string;
+  value: string;
+  input: string;
+}
+
+function maybeGroupEvents(
+  events: EventList,
+  grouped: boolean
+): EventList | midiEvent.EventContainer[] {
+  return grouped
+    ? groupConsecutiveEvents(
+        events,
+        (
+          currentContainer: midiEvent.EventContainer | null,
+          currentEvent: midiEvent.SupportedEvent
+        ) => currentContainer?.type === currentEvent.type
+      )
+    : events;
 }
 
 const MidiEvents: React.FC<IProps> = props => {
@@ -106,7 +161,6 @@ const MidiEvents: React.FC<IProps> = props => {
   useEffect(() => {
     // setEvents(filterOutNonGroupableEvents(events));
   }, [groupEvents]);
-
   return (
     <TableContainer className={classes.container}>
       <DatatableToolbar
@@ -129,17 +183,15 @@ const MidiEvents: React.FC<IProps> = props => {
         </TableHead>
         <TableBody>
           {getEventsToShow(events, groupEvents).map(
-            (event: midiEvent.SupportedEvent, rowNumber: number) => {
+            (event: IEventPresentation, rowNumber: number) => {
               return (
                 <TableRow key={rowNumber}>
                   <StyledTableCell component="th" scope="row">
                     {event.type}
                   </StyledTableCell>
-                  <StyledTableCell>{getEventValue(event)}</StyledTableCell>
-                  <StyledTableCell>{event.input.name}</StyledTableCell>
-                  <StyledTableCell>
-                    {new Date(event.timestamp).toUTCString()}
-                  </StyledTableCell>
+                  <StyledTableCell>{event.value}</StyledTableCell>
+                  <StyledTableCell>{event.input}</StyledTableCell>
+                  <StyledTableCell>{event.timestamp}</StyledTableCell>
                 </TableRow>
               );
             }

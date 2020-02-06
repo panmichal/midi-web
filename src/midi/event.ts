@@ -20,6 +20,7 @@ export interface MidiEvent {
   channel: number;
   input: WebMidi.MIDIInput;
   timestamp: DOMHighResTimeStamp;
+  children?: SupportedEvent[];
 }
 
 export interface NoteOnEvent extends MidiEvent {
@@ -48,6 +49,16 @@ export interface OtherEvent extends MidiEvent {
   type: "other";
 }
 
+type AvailableTypes<T> = T extends SupportedEvent ? T["type"] : never;
+
+export interface EventContainer {
+  type: AvailableTypes<SupportedEvent>;
+  children: SupportedEvent[];
+}
+
+type NoteEvent = NoteOffEvent | NoteOnEvent;
+type EventGroup = NoteEvent | ControlChangeEvent | OtherEvent;
+
 type EventRequiredData<T extends SupportedEvent> = Omit<T, "type">;
 
 export type SupportedEvent =
@@ -55,12 +66,6 @@ export type SupportedEvent =
   | NoteOffEvent
   | ControlChangeEvent
   | OtherEvent;
-
-function getEventType<T extends SupportedEvent, E extends EventRequiredData<T>>(
-  e: E
-): T["type"] {
-  return "other";
-}
 
 function createEvent<T extends SupportedEvent>(
   data: EventRequiredData<T>,
