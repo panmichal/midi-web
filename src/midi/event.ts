@@ -52,11 +52,10 @@ export interface EventContainer {
 }
 
 type NoteEvent = NoteOffEvent | NoteOnEvent;
-type EventGroup = NoteEvent | ControlChangeEvent | OtherEvent;
 
 type EventRequiredData<T extends SupportedEvent> = Omit<T, 'type'>;
 
-export type SupportedEvent = NoteOnEvent | NoteOffEvent | ControlChangeEvent | OtherEvent;
+export type SupportedEvent = NoteOnEvent | NoteOffEvent | ControlChangeEvent | InputConnectedEvent | OtherEvent;
 
 function createEvent<T extends SupportedEvent>(data: EventRequiredData<T>, type: T['type']): T {
     return {

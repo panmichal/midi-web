@@ -59,6 +59,8 @@ const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
             return event.noteName + event.octave;
         case 'control change':
             return `CC${event.controllerNumber} ${event.controllerValue}`;
+        case 'input connected':
+            return event.input.name ? event.input.name : '-';
         case 'other':
             return '-';
         default:
@@ -127,8 +129,8 @@ const MidiEvents: React.FC<Props> = props => {
             input.onmidimessage = (e: WebMidi.MIDIMessageEvent): void => {
                 const newEvent = midiEvent.createFromRawData(e, input);
                 if (newEvent !== null) {
-                    throttledOnIncomingEvent(newEvent);
                     console.log(newEvent);
+                    throttledOnIncomingEvent(newEvent);
                     setEvents(currentEvents => {
                         const sliceIndex =
                             currentEvents.length - NUM_OF_EVENTS >= 0 ? currentEvents.length - NUM_OF_EVENTS : 0;
