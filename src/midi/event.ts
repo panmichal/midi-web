@@ -51,8 +51,6 @@ export interface EventContainer {
     children: SupportedEvent[];
 }
 
-type NoteEvent = NoteOffEvent | NoteOnEvent;
-
 type EventRequiredData<T extends SupportedEvent> = Omit<T, 'type'>;
 
 export type SupportedEvent = NoteOnEvent | NoteOffEvent | ControlChangeEvent | InputConnectedEvent | OtherEvent;
