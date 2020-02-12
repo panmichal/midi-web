@@ -92,7 +92,7 @@ function getEventsToShow(events: EventList, grouped: boolean): EventPresentation
                 type: eventOrContainer.type,
                 timestamp: '',
                 value: `(${eventOrContainer.children.length})`,
-                input: 'afaf',
+                input: '-',
             } as EventPresentation);
         } else {
             presentation.push({
@@ -113,6 +113,14 @@ interface EventPresentation {
     input: string;
 }
 
+function updateEvents(
+    currentEvents: midiEvent.SupportedEvent[],
+    newEvent: midiEvent.SupportedEvent,
+): midiEvent.SupportedEvent[] {
+    const sliceIndex = currentEvents.length - NUM_OF_EVENTS >= 0 ? currentEvents.length - NUM_OF_EVENTS : 0;
+    return [...currentEvents.slice(sliceIndex), newEvent];
+}
+
 const MidiEvents: React.FC<Props> = props => {
     const classes = useStyles();
     const [events, setEvents] = useState(props.initialEvents);
@@ -129,17 +137,14 @@ const MidiEvents: React.FC<Props> = props => {
             input.onmidimessage = (e: WebMidi.MIDIMessageEvent): void => {
                 const newEvent = midiEvent.createFromRawData(e, input);
                 if (newEvent !== null) {
-                    console.log(newEvent);
                     throttledOnIncomingEvent(newEvent);
                     setEvents(currentEvents => {
-                        const sliceIndex =
-                            currentEvents.length - NUM_OF_EVENTS >= 0 ? currentEvents.length - NUM_OF_EVENTS : 0;
-                        return [...currentEvents.slice(sliceIndex), newEvent];
+                        return updateEvents(currentEvents, newEvent);
                     });
                 }
             };
         });
-    });
+    }, []);
 
     useEffect(() => {
         // setEvents(filterOutNonGroupableEvents(events));
