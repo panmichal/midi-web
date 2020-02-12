@@ -1,11 +1,10 @@
 function debounce<T extends Function>(cb: T, wait = 200) {
-  console.log("deb");
-  let h = 0;
-  let callable = (...args: any) => {
-    clearTimeout(h);
-    h = setTimeout(() => cb(...args), wait);
-  };
-  return <T>(<any>callable);
+    let h = 0;
+    const callable = (...args: any) => {
+        clearTimeout(h);
+        h = setTimeout(() => cb(...args), wait);
+    };
+    return (callable as any) as T;
 }
 
 export default debounce;

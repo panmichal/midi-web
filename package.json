@@ -1,40 +1,46 @@
 {
-  "name": "ts-midi",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "./node_modules/parcel-bundler/bin/cli.js src/index.html",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/parcel-bundler/bin/cli.js build  src/index.html -d public"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@material-ui/core": "^4.8.3",
-    "@material-ui/icons": "^4.5.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
-  },
-  "devDependencies": {
-    "@types/react": "^16.9.17",
-    "@types/react-dom": "^16.9.4",
-    "@types/webmidi": "^2.0.3",
-    "husky": "^4.2.1",
-    "parcel-bundler": "^1.12.4",
-    "prettier": "1.19.1",
-    "pretty-quick": "^2.0.1",
-    "typescript": "^3.7.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
-  "builds": [
-    {
-      "src": "api/*",
-      "use": "@now/node@canary"
-    }
-  ]
+    "name": "ts-midi",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "./node_modules/parcel-bundler/bin/cli.js src/index.html",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "./node_modules/parcel-bundler/bin/cli.js build  src/index.html -d public"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@material-ui/core": "^4.8.3",
+        "@material-ui/icons": "^4.5.1",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0"
+    },
+    "devDependencies": {
+        "@types/react": "^16.9.17",
+        "@types/react-dom": "^16.9.4",
+        "@types/webmidi": "^2.0.3",
+        "@typescript-eslint/eslint-plugin": "^2.19.2",
+        "@typescript-eslint/parser": "^2.19.2",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.10.0",
+        "eslint-plugin-prettier": "^3.1.2",
+        "eslint-plugin-react": "^7.18.3",
+        "husky": "^4.2.1",
+        "parcel-bundler": "^1.12.4",
+        "prettier": "^1.19.1",
+        "pretty-quick": "^2.0.1",
+        "typescript": "^3.7.5"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged"
+        }
+    },
+    "builds": [
+        {
+            "src": "api/*",
+            "use": "@now/node@canary"
+        }
+    ]
 }
