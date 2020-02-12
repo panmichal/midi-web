@@ -151,7 +151,7 @@ const MidiEvents: React.FC<Props> = props => {
     }, [groupEvents]);
     return (
         <TableContainer className={classes.container}>
-            <DatatableToolbar groupEvents={groupEvents} onGroupEeventsChange={handleGroupEventsChange} />
+            <DatatableToolbar groupEvents={groupEvents} onGroupEventsChange={handleGroupEventsChange} />
             <Table className={classes.table} size="small" stickyHeader aria-label="MIDI event list">
                 <TableHead>
                     <TableRow>
