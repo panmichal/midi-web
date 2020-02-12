@@ -15,16 +15,16 @@ import { groupConsecutiveEvents } from '~/utility/groupConsecutive';
 
 const NUM_OF_EVENTS = 50;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
     table: {
         minWidth: 400,
     },
     container: {
         maxHeight: 500,
     },
-}));
+});
 
-const StyledTableCell = withStyles(theme => ({
+const StyledTableCell = withStyles({
     head: {
         borderBottom: '2px solid',
         marginBottom: '5px',
@@ -34,7 +34,7 @@ const StyledTableCell = withStyles(theme => ({
         height: 33,
         fontSize: 14,
     },
-}))(TableCell);
+})(TableCell);
 
 interface Props {
     initialEvents: Array<midiEvent.SupportedEvent>;
@@ -49,7 +49,7 @@ function filterOutNonGroupableEvents(events: EventList): EventList {
 }
 
 function assertNever(event: never): never {
-    throw new Error('Unexpected event');
+    throw new Error('Unexpected event ' + event);
 }
 const getEventValue: (event: midiEvent.SupportedEvent) => string = event => {
     switch (event.type) {
@@ -124,7 +124,7 @@ const MidiEvents: React.FC<Props> = props => {
 
     useEffect(() => {
         props.midiInputs.forEach(input => {
-            input.onmidimessage = e => {
+            input.onmidimessage = (e: WebMidi.MIDIMessageEvent): void => {
                 const newEvent = midiEvent.createFromRawData(e, input);
                 if (newEvent !== null) {
                     throttledOnIncomingEvent(newEvent);
