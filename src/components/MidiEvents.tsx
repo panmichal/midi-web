@@ -12,6 +12,7 @@ import * as midiEvent from '~/midi/event';
 import throttle from '~/utility/throttle';
 import DatatableToolbar from '~/components/DatatableToolbar';
 import { groupConsecutiveEvents } from '~/utility/groupConsecutive';
+import { filterEvents } from '~/events/filter';
 
 const NUM_OF_EVENTS = 50;
 
@@ -82,7 +83,7 @@ function maybeGroupEvents(events: EventList, grouped: boolean): EventList | midi
         : events;
 }
 
-function getEventsToShow(events: EventList, grouped: boolean): EventPresentation[] {
+function getEventsToShow(events: EventList, grouped: boolean, filter: string | null): EventPresentation[] {
     const maybeGrouped = grouped ? maybeGroupEvents(filterOutNonGroupableEvents(events), true) : events;
 
     const presentation: EventPresentation[] = [];
@@ -103,7 +104,8 @@ function getEventsToShow(events: EventList, grouped: boolean): EventPresentation
             } as EventPresentation);
         }
     });
-    return presentation;
+
+    return filterEvents(filter, presentation);
 }
 
 interface EventPresentation {
@@ -125,12 +127,14 @@ const MidiEvents: React.FC<Props> = props => {
     const classes = useStyles();
     const [events, setEvents] = useState(props.initialEvents);
     const [groupEvents, setGroupEvents] = useState(false);
+    const [filter, setFilter] = useState<string | null>(null);
 
     const throttledOnIncomingEvent = useCallback(throttle(props.onIncomingEvent), []);
 
     const handleGroupEventsChange: (event: React.ChangeEvent<HTMLInputElement>) => void = event => {
         setGroupEvents(event.currentTarget.checked);
     };
+    const onFilterChange: (filter: string) => void = filter => setFilter(filter);
 
     useEffect(() => {
         props.midiInputs.forEach(input => {
@@ -146,12 +150,13 @@ const MidiEvents: React.FC<Props> = props => {
         });
     }, []);
 
-    useEffect(() => {
-        // setEvents(filterOutNonGroupableEvents(events));
-    }, [groupEvents]);
     return (
         <TableContainer className={classes.container}>
-            <DatatableToolbar groupEvents={groupEvents} onGroupEventsChange={handleGroupEventsChange} />
+            <DatatableToolbar
+                groupEvents={groupEvents}
+                onGroupEventsChange={handleGroupEventsChange}
+                onFilterChange={onFilterChange}
+            />
             <Table className={classes.table} size="small" stickyHeader aria-label="MIDI event list">
                 <TableHead>
                     <TableRow>
@@ -162,7 +167,7 @@ const MidiEvents: React.FC<Props> = props => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {getEventsToShow(events, groupEvents).map((event: EventPresentation, rowNumber: number) => {
+                    {getEventsToShow(events, groupEvents, filter).map((event: EventPresentation, rowNumber: number) => {
                         return (
                             <TableRow key={rowNumber}>
                                 <StyledTableCell component="th" scope="row">

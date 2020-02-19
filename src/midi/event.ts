@@ -44,6 +44,13 @@ export interface OtherEvent extends MidiEvent {
     type: 'other';
 }
 
+export interface EventPresentation {
+    type: 'noteon' | 'noteoff' | 'control change' | 'other';
+    timestamp: string;
+    value: string;
+    input: string;
+}
+
 type AvailableTypes<T> = T extends SupportedEvent ? T['type'] : never;
 
 export interface EventContainer {

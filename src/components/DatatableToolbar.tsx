@@ -58,7 +58,11 @@ const useStyles = makeStyles({
 interface Props {
     groupEvents: boolean;
     onGroupEventsChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onFilterChange: (e: string) => void;
 }
+
+const onFilterChangee: (parentCallback: (e: string) => void, e: ChangeEvent<HTMLInputElement>) => void = (cb, e) =>
+    cb(e.currentTarget.value);
 
 const DatatableToolbar: React.FC<Props> = props => {
     const classes = useStyles();
@@ -66,7 +70,12 @@ const DatatableToolbar: React.FC<Props> = props => {
         <div className={classes.toolbar}>
             <div className={classes.searchContainer}>
                 <SearchIcon />
-                <input type="text" className={classes.searchBox} placeholder="filter" />
+                <input
+                    type="text"
+                    className={classes.searchBox}
+                    placeholder="filter"
+                    onChange={onFilterChangee.bind(null, props.onFilterChange)}
+                />
             </div>
             <div className={classes.groupCheckbox}>
                 <label>
