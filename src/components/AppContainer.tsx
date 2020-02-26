@@ -73,6 +73,10 @@ export default function AppContainer(props: Props) {
                             onIncomingEvent={onIncomingEvent}
                         ></MidiEvents>
                     }
+                    hasNewEvent={hasNewEvent}
+                    onDigestNewEvent={() => setHasNewEvent(false)}
+                    hasRecentInputListChange={hasRecentInputListChange}
+                    onDigestInputListChange={() => setRecentInputListChange(false)}
                 ></Panels>
             );
         } else if (midiInputs.length === 0) {

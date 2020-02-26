@@ -15,30 +15,20 @@ const useStyles = makeStyles(() => ({
     inputList: {
         transition: 'background-color 0.3s',
     },
-    progress: {
-        margin: 'auto',
-        width: 100,
-        padding: 100,
-    },
 }));
 
 interface Props {
     inputsTable: React.ReactNode;
     eventsTable: React.ReactNode;
+    onDigestNewEvent: () => void;
+    hasNewEvent: boolean;
+    hasRecentInputListChange: boolean;
+    onDigestInputListChange: () => void;
 }
 
 const Panels: React.FC<Props> = props => {
-    const [hasNewEvent, setHasNewEvent] = useState(false);
     const classes = useStyles();
-    const [hasRecentInputListChange, setRecentInputListChange] = useState(false);
     const [expandedPanel, setExpandedPanel] = useState<'inputs' | 'events' | undefined>(undefined);
-    const onEventPanelTransitionEnd = () => {
-        setHasNewEvent(false);
-    };
-
-    const onInputListTransitionEnd = () => {
-        setRecentInputListChange(false);
-    };
 
     const handleExpansionChange = (panel: 'inputs' | 'events') => (
         event: React.ChangeEvent<{}>,
@@ -50,8 +40,8 @@ const Panels: React.FC<Props> = props => {
         <>
             <ExpansionPanel expanded={expandedPanel === 'inputs'} onChange={handleExpansionChange('inputs')}>
                 <div
-                    className={`${classes.inputList} ${hasRecentInputListChange ? classes.inputListChanged : ''}`}
-                    onTransitionEnd={onInputListTransitionEnd}
+                    className={`${classes.inputList} ${props.hasRecentInputListChange ? classes.inputListChanged : ''}`}
+                    onTransitionEnd={props.onDigestInputListChange}
                 >
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>MIDI Inputs</ExpansionPanelSummary>
                 </div>
@@ -59,8 +49,8 @@ const Panels: React.FC<Props> = props => {
             </ExpansionPanel>
             <ExpansionPanel expanded={expandedPanel === 'events'} onChange={handleExpansionChange('events')}>
                 <div
-                    className={`${classes.eventList} ${hasNewEvent ? classes.eventListNewEvent : ''}`}
-                    onTransitionEnd={onEventPanelTransitionEnd}
+                    className={`${classes.eventList} ${props.hasNewEvent ? classes.eventListNewEvent : ''}`}
+                    onTransitionEnd={props.onDigestNewEvent}
                 >
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>Incoming MIDI events</ExpansionPanelSummary>
                 </div>
