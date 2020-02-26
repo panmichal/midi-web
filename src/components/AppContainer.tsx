@@ -1,10 +1,9 @@
-import { Container, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { MIDIInputs } from '~/midi/midiInfo';
 import { SupportedEvent } from '~/midi/event';
 import MidiInputs from '~/components/MidiInputs';
 import MidiEvents from '~/components/MidiEventTable';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Placeholder from '~/components/Placeholder';
@@ -43,7 +42,6 @@ export default function AppContainer(props: Props) {
     const [hasNewEvent, setHasNewEvent] = useState(false);
     const [hasRecentInputListChange, setRecentInputListChange] = useState(false);
     const [isMIDIReady, setIsMIDIReady] = useState(false);
-    const [expandedPanel, setExpandedPanel] = useState<Panel | undefined>(undefined);
     const onIncomingEvent: (event: SupportedEvent) => void = () => {
         if (!hasNewEvent) {
             setHasNewEvent(true);
@@ -63,9 +61,9 @@ export default function AppContainer(props: Props) {
         }
     }, [midiInputs]);
 
-    if (isMIDIReady && midiInputs.length > 0) {
-        return (
-            <Container maxWidth="md">
+    const getContent = (): React.ReactNode => {
+        if (isMIDIReady && midiInputs.length > 0) {
+            return (
                 <Panels
                     inputsTable={<MidiInputs inputs={props.midiInputs}></MidiInputs>}
                     eventsTable={
@@ -76,18 +74,17 @@ export default function AppContainer(props: Props) {
                         ></MidiEvents>
                     }
                 ></Panels>
-            </Container>
-        );
-    } else if (midiInputs.length === 0) {
-        return <Placeholder />;
-    } else {
-        return (
-            <Container maxWidth="md">
-                {' '}
+            );
+        } else if (midiInputs.length === 0) {
+            return <Placeholder />;
+        } else {
+            return (
                 <div className={classes.progress}>
                     <CircularProgress />
                 </div>
-            </Container>
-        );
-    }
+            );
+        }
+    };
+
+    return <Container maxWidth="md">{getContent()}</Container>;
 }
