@@ -1,17 +1,17 @@
-export type MIDIInputs = Array<WebMidi.MIDIInput>
+export type MIDIInputs = Array<WebMidi.MIDIInput>;
 
 export enum MIDIInputState {
-    connected = "connected"
+    connected = 'connected',
 }
 
 export function getMidiInputs(access: WebMidi.MIDIAccess): MIDIInputs {
-    return [...access.inputs.values()]
+    return [...access.inputs.values()];
 }
 
 export async function getMIDIAccess(navigator: Navigator): Promise<WebMidi.MIDIAccess> {
-    return navigator.requestMIDIAccess()
+    return navigator.requestMIDIAccess();
 }
 
 export function onStateChange(access: WebMidi.MIDIAccess, f: (newPort: WebMidi.MIDIConnectionEvent) => void): void {
-    access.onstatechange = f
-}   
+    access.onstatechange = f;
+}

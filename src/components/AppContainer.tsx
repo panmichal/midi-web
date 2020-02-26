@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { MIDIInputs } from '~/midi/midiInfo';
 import { SupportedEvent } from '~/midi/event';
 import MidiInputs from '~/components/MidiInputs';
-import MidiEvents from '~/components/MidiEvents';
+import MidiEvents from '~/components/MidiEventTable';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Placeholder from '~/components/Placeholder';
+import Panels from '~/components/Panels';
 import throttle from '~/utility/throttle';
 
 interface Props {
@@ -37,11 +39,12 @@ const useStyles = makeStyles(theme => ({
 
 export default function AppContainer(props: Props) {
     const classes = useStyles();
+    const { midiInputs } = props;
     const [hasNewEvent, setHasNewEvent] = useState(false);
     const [hasRecentInputListChange, setRecentInputListChange] = useState(false);
     const [isMIDIReady, setIsMIDIReady] = useState(false);
     const [expandedPanel, setExpandedPanel] = useState<Panel | undefined>(undefined);
-    const onIncomingEvent: (event: SupportedEvent) => void = event => {
+    const onIncomingEvent: (event: SupportedEvent) => void = () => {
         if (!hasNewEvent) {
             setHasNewEvent(true);
         }
@@ -53,64 +56,30 @@ export default function AppContainer(props: Props) {
         }
     };
 
-    // useEffect(() => {
-    //     return () => setRecentInputListChange(false);
-    // })
-
     useEffect(() => {
-        if (props.midiInputs.length > 0) {
-            setIsMIDIReady(true);
-        }
-        if (isMIDIReady) {
+        setIsMIDIReady(true);
+        if (midiInputs.length > 0) {
             throttle(onInputListChange, 500)();
         }
-    }, [props.midiInputs]);
+    }, [midiInputs]);
 
-    const onEventPanelTransitionEnd = () => {
-        setHasNewEvent(false);
-    };
-
-    const onInputListTransitionEnd = () => {
-        setRecentInputListChange(false);
-    };
-
-    const handleExpansionChange = (panel: Panel) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
-        setExpandedPanel(expanded ? panel : undefined);
-    };
-
-    if (isMIDIReady) {
+    if (isMIDIReady && midiInputs.length > 0) {
         return (
             <Container maxWidth="md">
-                <ExpansionPanel expanded={expandedPanel === 'inputs'} onChange={handleExpansionChange('inputs')}>
-                    <div
-                        className={`${classes.inputList} ${hasRecentInputListChange ? classes.inputListChanged : ''}`}
-                        onTransitionEnd={onInputListTransitionEnd}
-                    >
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>MIDI Inputs</ExpansionPanelSummary>
-                    </div>
-                    <ExpansionPanelDetails>
-                        <MidiInputs inputs={props.midiInputs}></MidiInputs>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel expanded={expandedPanel === 'events'} onChange={handleExpansionChange('events')}>
-                    <div
-                        className={`${classes.eventList} ${hasNewEvent ? classes.eventListNewEvent : ''}`}
-                        onTransitionEnd={onEventPanelTransitionEnd}
-                    >
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                            Incoming MIDI events
-                        </ExpansionPanelSummary>
-                    </div>
-                    <ExpansionPanelDetails>
+                <Panels
+                    inputsTable={<MidiInputs inputs={props.midiInputs}></MidiInputs>}
+                    eventsTable={
                         <MidiEvents
                             initialEvents={[]}
                             midiInputs={props.midiInputs}
                             onIncomingEvent={onIncomingEvent}
                         ></MidiEvents>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
+                    }
+                ></Panels>
             </Container>
         );
+    } else if (midiInputs.length === 0) {
+        return <Placeholder />;
     } else {
         return (
             <Container maxWidth="md">
