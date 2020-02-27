@@ -14,13 +14,13 @@ interface Props {
     midiInputs: MIDIInputs;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
     progress: {
         margin: 'auto',
         width: 100,
         padding: 100,
     },
-}));
+});
 
 export default function AppContainer(props: Props) {
     const classes = useStyles();
