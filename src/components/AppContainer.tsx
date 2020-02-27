@@ -14,21 +14,7 @@ interface Props {
     midiInputs: MIDIInputs;
 }
 
-type Panel = 'inputs' | 'events';
-
 const useStyles = makeStyles(theme => ({
-    eventListNewEvent: {
-        backgroundColor: '#e6f9ff',
-    },
-    eventList: {
-        transition: 'background-color 0.1s',
-    },
-    inputListChanged: {
-        backgroundColor: '#e6f9ff',
-    },
-    inputList: {
-        transition: 'background-color 0.3s',
-    },
     progress: {
         margin: 'auto',
         width: 100,
@@ -48,16 +34,12 @@ export default function AppContainer(props: Props) {
         }
     };
 
-    const onInputListChange: () => void = () => {
-        if (!hasRecentInputListChange) {
-            setRecentInputListChange(true);
-        }
-    };
-
     useEffect(() => {
-        setIsMIDIReady(true);
+        if (isMIDIReady && !hasRecentInputListChange) {
+            throttle(() => setRecentInputListChange(true), 500)();
+        }
         if (midiInputs.length > 0) {
-            throttle(onInputListChange, 500)();
+            setIsMIDIReady(true);
         }
     }, [midiInputs]);
 
