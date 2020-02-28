@@ -9,6 +9,7 @@ interface AddEventAction {
 
 export interface EventState {
     events: SupportedEvent[];
+    notesPlaying: string[];
 }
 
 export type EventActionTypes = AddEventAction;

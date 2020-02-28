@@ -1,5 +1,6 @@
-import { combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, compose } from 'redux';
 import { eventReducer } from '~/store/events/reducers';
+import { devToolsEnhancer } from 'redux-devtools-extension';
 
 const rootReducer = combineReducers({
     event: eventReducer,
@@ -7,4 +8,4 @@ const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export default createStore(rootReducer);
+export default createStore(rootReducer, devToolsEnhancer({ name: 'Devtools' }));

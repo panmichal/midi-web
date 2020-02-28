@@ -38,7 +38,8 @@ const StyledTableCell = withStyles({
 })(TableCell);
 
 interface Props {
-    initialEvents: Array<midiEvent.SupportedEvent>;
+    events: midiEvent.SupportedEvent[];
+    initialEvents: midiEvent.SupportedEvent[];
     onIncomingEvent: (e: midiEvent.SupportedEvent) => void;
     midiInputs: midiInfo.MIDIInputs;
 }

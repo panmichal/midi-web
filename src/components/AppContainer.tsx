@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { MIDIInputs } from '~/midi/midiInfo';
 import { SupportedEvent } from '~/midi/event';
 import MidiInputs from '~/components/MidiInputs';
-import MidiEvents from '~/components/MidiEventTable';
+import EventList from '~/components/EventList';
 import RecentChords from '~/components/RecentChords';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function AppContainer(props: Props) {
+export default function AppContainer(props: Props): React.ReactNode {
     const classes = useStyles();
     const { midiInputs } = props;
     const [hasNewEvent, setHasNewEvent] = useState(false);
@@ -50,11 +50,11 @@ export default function AppContainer(props: Props) {
                 <Panels
                     inputsTable={<MidiInputs inputs={props.midiInputs}></MidiInputs>}
                     eventsTable={
-                        <MidiEvents
+                        <EventList
                             initialEvents={[]}
                             midiInputs={props.midiInputs}
                             onIncomingEvent={onIncomingEvent}
-                        ></MidiEvents>
+                        ></EventList>
                     }
                     chordsTable={<RecentChords />}
                     hasNewEvent={hasNewEvent}
