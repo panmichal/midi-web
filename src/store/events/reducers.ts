@@ -10,5 +10,7 @@ export function eventReducer(state = initialState, action: EventActionTypes): Ev
             return {
                 events: [...state.events, action.event],
             };
+        default:
+            return state;
     }
 }

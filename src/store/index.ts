@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers, createStore } from 'redux';
 import { eventReducer } from '~/store/events/reducers';
 
 const rootReducer = combineReducers({
@@ -6,3 +6,5 @@ const rootReducer = combineReducers({
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
+
+export default createStore(rootReducer);

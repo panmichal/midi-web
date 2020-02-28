@@ -14,11 +14,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-    chordsPlayed: string[];
+    chords: string[];
 }
 
 const Chords: React.FC<Props> = props => {
-    return <div>{props.chordsPlayed.map(chord => chord)}</div>;
+    return <div>{props.chords.map(chord => chord)}</div>;
 };
 
 export default Chords;

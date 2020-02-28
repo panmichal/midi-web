@@ -20,17 +20,20 @@ const useStyles = makeStyles(() => ({
 interface Props {
     inputsTable: React.ReactNode;
     eventsTable: React.ReactNode;
+    chordsTable: React.ReactNode;
     onDigestNewEvent: () => void;
     hasNewEvent: boolean;
     hasRecentInputListChange: boolean;
     onDigestInputListChange: () => void;
 }
 
+type AvailablePanels = 'inputs' | 'events' | 'chords';
+
 const Panels: React.FC<Props> = props => {
     const classes = useStyles();
-    const [expandedPanel, setExpandedPanel] = useState<'inputs' | 'events' | undefined>(undefined);
+    const [expandedPanel, setExpandedPanel] = useState<AvailablePanels | undefined>(undefined);
 
-    const handleExpansionChange = (panel: 'inputs' | 'events') => (
+    const handleExpansionChange = (panel: AvailablePanels) => (
         event: React.ChangeEvent<{}>,
         expanded: boolean,
     ): void => {
@@ -55,6 +58,12 @@ const Panels: React.FC<Props> = props => {
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>Incoming MIDI events</ExpansionPanelSummary>
                 </div>
                 <ExpansionPanelDetails>{props.eventsTable}</ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel expanded={expandedPanel === 'chords'} onChange={handleExpansionChange('chords')}>
+                <div className={`${classes.eventList}`} onTransitionEnd={props.onDigestNewEvent}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>Chords</ExpansionPanelSummary>
+                </div>
+                <ExpansionPanelDetails>{props.chordsTable}</ExpansionPanelDetails>
             </ExpansionPanel>
         </>
     );

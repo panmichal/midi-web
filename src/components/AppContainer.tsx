@@ -4,6 +4,7 @@ import { MIDIInputs } from '~/midi/midiInfo';
 import { SupportedEvent } from '~/midi/event';
 import MidiInputs from '~/components/MidiInputs';
 import MidiEvents from '~/components/MidiEventTable';
+import RecentChords from '~/components/RecentChords';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Placeholder from '~/components/Placeholder';
@@ -55,6 +56,7 @@ export default function AppContainer(props: Props) {
                             onIncomingEvent={onIncomingEvent}
                         ></MidiEvents>
                     }
+                    chordsTable={<RecentChords />}
                     hasNewEvent={hasNewEvent}
                     onDigestNewEvent={() => setHasNewEvent(false)}
                     hasRecentInputListChange={hasRecentInputListChange}
