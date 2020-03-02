@@ -4,7 +4,7 @@ import { MIDIInputs } from '~/midi/midiInfo';
 import { SupportedEvent } from '~/midi/event';
 import MidiInputs from '~/components/MidiInputs';
 import EventList from '~/components/EventList';
-import RecentChords from '~/components/RecentChords';
+import ChordsContainer from '~/components/ChordsContainer';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Placeholder from '~/components/Placeholder';
@@ -56,7 +56,7 @@ export default function AppContainer(props: Props): React.ReactNode {
                             onIncomingEvent={onIncomingEvent}
                         ></EventList>
                     }
-                    chordsTable={<RecentChords />}
+                    chordsTable={<ChordsContainer />}
                     hasNewEvent={hasNewEvent}
                     onDigestNewEvent={() => setHasNewEvent(false)}
                     hasRecentInputListChange={hasRecentInputListChange}

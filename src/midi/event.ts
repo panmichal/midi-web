@@ -21,7 +21,6 @@ export interface NoteOnEvent extends MidiEvent {
 
 export interface NoteOffEvent extends MidiEvent {
     type: 'noteoff';
-
     note: number;
     noteName: NoteName;
     velocity: number;
