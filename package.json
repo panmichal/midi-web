@@ -13,6 +13,7 @@
     "dependencies": {
         "@material-ui/core": "^4.8.3",
         "@material-ui/icons": "^4.5.1",
+        "@tonaljs/chord-dictionary": "^3.3.0",
         "react": "^16.12.0",
         "react-dom": "^16.12.0",
         "react-redux": "^7.2.0",
