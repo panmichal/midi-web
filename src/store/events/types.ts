@@ -7,9 +7,14 @@ interface AddEventAction {
     event: SupportedEvent;
 }
 
+export interface PlayedNote {
+    octave: number;
+    noteName: string;
+}
+
 export interface EventState {
     events: SupportedEvent[];
-    notesPlaying: string[];
+    notesPlaying: PlayedNote[];
 }
 
 export type EventActionTypes = AddEventAction;

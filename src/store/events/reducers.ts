@@ -1,14 +1,16 @@
-import { EventState, EventActionTypes, ADD_EVENT } from './types';
+import { EventState, EventActionTypes, ADD_EVENT, PlayedNote } from './types';
 
-function updatePlayingNotes(currentNotes: string[], action: EventActionTypes): string[] {
-    if (action.event.type === 'noteon' && !currentNotes.includes(action.event.noteName)) {
-        return [...currentNotes, action.event.noteName];
+function updatePlayingNotes(currentNotes: PlayedNote[], action: EventActionTypes): PlayedNote[] {
+    if (action.event.type === 'noteon') {
+        const newNote = { noteName: action.event.noteName, octave: action.event.octave };
+        return [...currentNotes, newNote];
     }
 
-    if (action.event.type === 'noteoff' && currentNotes.includes(action.event.noteName)) {
+    if (action.event.type === 'noteoff') {
         const offName = action.event.noteName;
-        return currentNotes.filter(noteName => {
-            return noteName !== offName;
+        const offOctave = action.event.octave;
+        return currentNotes.filter(note => {
+            return note.noteName !== offName || note.octave !== offOctave;
         });
     }
 
