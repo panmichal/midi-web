@@ -1,4 +1,4 @@
-import { combineReducers, createStore, compose } from 'redux';
+import { combineReducers, createStore } from 'redux';
 import { eventReducer } from '~/store/events/reducers';
 import { devToolsEnhancer } from 'redux-devtools-extension';
 

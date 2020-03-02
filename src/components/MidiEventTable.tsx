@@ -13,6 +13,7 @@ import throttle from '~/utility/throttle';
 import DatatableToolbar from '~/components/DatatableToolbar';
 import { groupConsecutiveEvents } from '~/utility/groupConsecutive';
 import { filterEvents } from '~/events/filter';
+import { mapStateToProps, dispatchProps } from '~/components/EventList';
 
 const NUM_OF_EVENTS = 50;
 
@@ -124,7 +125,8 @@ function updateEvents(
     return [...currentEvents.slice(sliceIndex), newEvent];
 }
 
-const MidiEvents: React.FC<Props> = props => {
+const MidiEvents: React.FC<Props & ReturnType<typeof mapStateToProps> & typeof dispatchProps> = props => {
+    const { onNewEvent } = props;
     const classes = useStyles();
     const [events, setEvents] = useState(props.initialEvents);
     const [groupEvents, setGroupEvents] = useState(false);
@@ -136,13 +138,13 @@ const MidiEvents: React.FC<Props> = props => {
         setGroupEvents(event.currentTarget.checked);
     };
     const onFilterChange: (filter: string) => void = filter => setFilter(filter);
-
     useEffect(() => {
         props.midiInputs.forEach(input => {
             input.onmidimessage = (e: WebMidi.MIDIMessageEvent): void => {
                 const newEvent = midiEvent.createFromRawData(e, input);
                 if (newEvent !== null) {
                     throttledOnIncomingEvent(newEvent);
+                    onNewEvent(newEvent);
                     setEvents(currentEvents => {
                         return updateEvents(currentEvents, newEvent);
                     });
