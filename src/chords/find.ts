@@ -15,12 +15,11 @@ function findForPermutation(notes: string[]): string {
     return `${root} ${chordName}`;
 }
 
-export const findChord: (notes: string[]) => string = notes => {
+export const findChord: (notes: string[]) => string[] = notes => {
     // const permutations
     const chord = getPermutations(notes)
         .map(p => findForPermutation(p))
-        .filter(chord => chord !== '')
-        .shift();
+        .filter((chord, index, self) => chord !== '' && self.indexOf(chord) === index);
 
-    return chord !== undefined ? chord : '';
+    return chord;
 };
