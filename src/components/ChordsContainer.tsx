@@ -7,7 +7,6 @@ import { pcset } from '@tonaljs/pcset';
 
 export const mapStateToProps: (state: RootState) => { chords: string[] } = state => {
     const notes = state.event.notesPlaying.map(note => note.noteName);
-    console.log(chordType(pcset(notes).chroma));
     return { chords: [chordType(pcset(notes).chroma).name] };
 };
 
