@@ -15,7 +15,7 @@ function findForPermutation(notes: string[]): string {
     return `${root} ${chordName}`;
 }
 
-export const findChord: (notes: string[]) => string[] = notes => {
+export const findChords: (notes: string[]) => string[] = notes => {
     // const permutations
     const chord = getPermutations(notes)
         .map(p => findForPermutation(p))

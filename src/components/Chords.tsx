@@ -17,8 +17,12 @@ interface Props {
     chords: string[];
 }
 
+function chord(chord: string): React.ReactNode {
+    return <div key={chord}>{chord}</div>;
+}
+
 const Chords: React.FC<Props> = props => {
-    return <div>{props.chords.map(chord => chord)}</div>;
+    return <div>{props.chords.map(chord)}</div>;
 };
 
 export default Chords;

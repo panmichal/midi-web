@@ -1,13 +1,11 @@
 import { connect } from 'react-redux';
 import { RootState } from '~/store/index';
-import { PlayedNote } from '~/store/events/types';
 import Chords from '~/components/Chords';
-import { chordType } from '@tonaljs/chord-dictionary';
-import { pcset } from '@tonaljs/pcset';
+import { findChords } from '~/chords/find';
 
 export const mapStateToProps: (state: RootState) => { chords: string[] } = state => {
     const notes = state.event.notesPlaying.map(note => note.noteName);
-    return { chords: [chordType(pcset(notes).chroma).name] };
+    return { chords: findChords(notes) };
 };
 
 const ChordsContainer = connect(mapStateToProps)(Chords);
