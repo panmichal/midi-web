@@ -21,7 +21,7 @@ type Props = {
     children?: React.Component;
 };
 
-export default function Expansion(props: Props) {
+export default function Expansion(props: Props): React.ReactNode {
     const classes = useStyles();
 
     return (
