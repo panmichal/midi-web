@@ -15,6 +15,10 @@ const useStyles = makeStyles(() => ({
     inputList: {
         transition: 'background-color 0.3s',
     },
+    panelSummary: {
+        fontFamily: 'Playfair Display',
+        fontSize: 15,
+    },
 }));
 
 interface Props {
@@ -46,7 +50,9 @@ const Panels: React.FC<Props> = props => {
                     className={`${classes.inputList} ${props.hasRecentInputListChange ? classes.inputListChanged : ''}`}
                     onTransitionEnd={props.onDigestInputListChange}
                 >
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>MIDI Inputs</ExpansionPanelSummary>
+                    <ExpansionPanelSummary className={classes.panelSummary} expandIcon={<ExpandMoreIcon />}>
+                        MIDI Inputs
+                    </ExpansionPanelSummary>
                 </div>
                 <ExpansionPanelDetails>{props.inputsTable}</ExpansionPanelDetails>
             </ExpansionPanel>
@@ -55,13 +61,17 @@ const Panels: React.FC<Props> = props => {
                     className={`${classes.eventList} ${props.hasNewEvent ? classes.eventListNewEvent : ''}`}
                     onTransitionEnd={props.onDigestNewEvent}
                 >
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>Incoming MIDI events</ExpansionPanelSummary>
+                    <ExpansionPanelSummary className={classes.panelSummary} expandIcon={<ExpandMoreIcon />}>
+                        Incoming MIDI events
+                    </ExpansionPanelSummary>
                 </div>
                 <ExpansionPanelDetails>{props.eventsTable}</ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel expanded={expandedPanel === 'chords'} onChange={handleExpansionChange('chords')}>
                 <div className={`${classes.eventList}`} onTransitionEnd={props.onDigestNewEvent}>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>Chords</ExpansionPanelSummary>
+                    <ExpansionPanelSummary className={classes.panelSummary} expandIcon={<ExpandMoreIcon />}>
+                        Chords
+                    </ExpansionPanelSummary>
                 </div>
                 <ExpansionPanelDetails>{props.chordsTable}</ExpansionPanelDetails>
             </ExpansionPanel>
